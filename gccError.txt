@@ -1,0 +1,17 @@
+1. 解决警告错误，如
+gdate.c:2497:7: error: format not a string literal, format string not checked [-Werror=format-nonliteral]
+
+
+diff --git a/glib/gdate.c b/glib/gdate.c
+index 4aece02..cdc735c 100644
+--- a/glib/gdate.c
++++ b/glib/gdate.c
+@@ -2494,7 +2494,10 @@ g_date_strftime (gchar       *s,
+                                        * recognize whether strftime actually failed or just returned "".
+                                        */
+                                        tmpbuf[0] = '\1';
++      #pragma GCC diagnostic push
++      #pragma GCC diagnostic ignored "-Wformat-nonliteral"
+       tmplen = strftime (tmpbuf, tmpbufsize, locale_format, &tm);
++      #pragma GCC diagnostic pop
+
