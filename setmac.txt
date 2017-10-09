@@ -1,0 +1,19 @@
+fetch_mac_from_mtd() {
+        mtd=$(grep u-boot-env /proc/mtd | cut -d: -f1)
+        [ -z $mtd ] && return
+
+        mac=$(grep wlan_hwaddr /dev/$mtd | cut -d= -f2)
+        [ ! -z $mac ] && ifconfig wlan0 hw ether $mac 2>/dev/null
+
+        mac=$(grep ^lan_hwaddr /dev/$mtd | cut -d= -f2)
+        [ ! -z $mac ] && ifconfig eth0.1 hw ether $mac 2>/dev/null
+
+        mac=$(grep wan_hwaddr /dev/$mtd | cut -d= -f2)
+        [ ! -z $mac ] && ifconfig eth0.2 hw ether $mac 2>/dev/null
+}
+preinit_set_mac_address() {
+        . /lib/functions.sh
+        fetch_mac_from_mtd
+}
+
+boot_hook_add preinit_main preinit_set_mac_address
