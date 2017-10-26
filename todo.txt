@@ -1,10 +1,20 @@
+
+研究batman-adv
+nexfi-led 灯不通时ping其它mac
+luci 增加 无线页面
+
+
+
+
 netpool修改
 
-1.登录界面也做到web里面
-2.系统设置里面不用区分4或5版本
-3.左侧属性表默认显示
+1.登录界面也做到web里面  y
+2.系统设置里面不用区分4或5版本 y 
+3.左侧属性表默认显示 y
+
 4.增加属性：别名、LAN相关（ip、掩码）mesh相关（频宽、信道、速率、ssid、bssid、加密、密钥、间隔、版本）wifi相关（SSID、密码）
 5.布局拓扑模式右键取消，属性列表如上，设备管理里面配置属性如上
+
 6.列表模式信道后面的几项显示mesh的频宽、信道、速率、ssid、bssid
 7.设备管理里面的列表修改如上
 
@@ -12,6 +22,23 @@ netpool修改
 
 s =socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 jj = b'\xCC\x00\x01\x00\x00\xf2\x00\x00\x00\x00'
+ss = b'\xCC\x00\x00\x00\x00\xf2\x00\x00\x00\x00'
+duoti = b'\xCC\x00\x02\x00\x00\xf2\xf0\x05\x00\x00'
+
 s.sendto(jj, dest)
+
+
+无线  搜索按钮
+      进入2.4g卡住
+
+串口程序，1m内随机重发一次
+dnsmasq
+
+用户名密码 root/admin
+
+
+
+
