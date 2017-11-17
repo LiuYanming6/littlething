@@ -40,5 +40,18 @@ dnsmasq
 用户名密码 root/admin
 
 
+插座版本发风帆， 测试24小时重启
 
+ruiyi mysql加索引
+
+
+
+
+
+
+
+
+
+
+e600g
 
