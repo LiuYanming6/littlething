@@ -1,0 +1,36 @@
+fetch_mac_from_mtd() {
+        mtd=$(grep u-boot-env /proc/mtd | cut -d: -f1)
+        [ -z $mtd ] && return
+
+        mac=$(grep wlan_hwaddr /dev/$mtd | cut -d= -f2)
+        [ ! -z $mac ] && ifconfig wlan0 hw ether $mac 2>/dev/null
+
+        mac=$(grep ^lan_hwaddr /dev/$mtd | cut -d= -f2)
+        [ ! -z $mac ] && ifconfig eth0.1 hw ether $mac 2>/dev/null
+
+        mac=$(grep wan_hwaddr /dev/$mtd | cut -d= -f2)
+        [ ! -z $mac ] && ifconfig eth0.2 hw ether $mac 2>/dev/null
+}
+preinit_set_mac_address() {
+        . /lib/functions.sh
+        fetch_mac_from_mtd
+}
+
+boot_hook_add preinit_main preinit_set_mac_address
+
+
+2. 怎么读取art中的mac呢
+#define AP147_MAC0_OFFSET   0x1000
+u8 *art = (u8 *)KSEG1ADDR(0x1fff0000);
+ath79_register_wmac(art + AP147_MAC0_OFFSET, NULL);
+
+hexdump  /dev/mtd5
+lan wan wifi 的硬件地址找到了， 没有mesh mac的，应该在pcie卡上，不是底板
+cat /sys/devices/pci0000\:00/0000\:00\:00.0/ieee80211/phy1/addresses
+这个mac是不会随着ifconfig adhoc0的变化而变化的
+
+adhoc0    Link encap:Ethernet  HWaddr B8:8E:DF:00:1D:D1  
+br-lan    Link encap:Ethernet  HWaddr B8:8E:DF:00:25:05  
+eth0      Link encap:Ethernet  HWaddr B8:8E:DF:00:25:04  
+eth1      Link encap:Ethernet  HWaddr B8:8E:DF:00:25:05  
+wlan0     Link encap:Ethernet  HWaddr B8:8E:DF:00:A0:4E 
